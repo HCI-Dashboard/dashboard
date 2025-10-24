@@ -2,3 +2,15 @@ spring:
   config:
     activate:
       on-profile: prod
+  datasource:
+    hikari:
+      jdbc-url: jdbc:postgresql://localhost:5432/dashboard_prod
+      username: sa
+      password: ""
+      driver-class-name: org.postgresql.Driver
+      pool-name: HikariPool
+  jpa:
+    database: PostgreSQL
+    open-in-view: false
+    hibernate:
+      ddl-auto: none

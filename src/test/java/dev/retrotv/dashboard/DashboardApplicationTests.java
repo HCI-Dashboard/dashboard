@@ -9,5 +9,4 @@ class DashboardApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }
