@@ -35,7 +35,7 @@ import lombok.experimental.SuperBuilder;
     }
 )
 public class AuthorityEntity extends DateEntity implements GrantedAuthority, Persistable<String> {
-    
+
     @Id
     @Size(max = 20)
     @Comment("권한 코드")
@@ -62,12 +62,12 @@ public class AuthorityEntity extends DateEntity implements GrantedAuthority, Per
     public String getAuthority() {
         return authorityCode;
     }
-    
+
     @Override
     public String getId() {
         return this.authorityCode;
     }
-    
+
     @Override
     public boolean isNew() {
         return this.isNew;

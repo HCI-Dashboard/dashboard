@@ -22,12 +22,13 @@ public interface UserMapper {
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "newPassword", ignore = true)
     @Mapping(target = "authorities", source = "authorities")
-    UserDTO toExcloudPasswordDTO(UserEntity userEntity, Set<AuthorityEntity> authorities);
+    UserDTO toExcludePasswordDTO(UserEntity userEntity, Set<AuthorityEntity> authorities);
 
-    default UserEntity toEntity(UserDTO userDTO) {        
+    default UserEntity toEntity(UserDTO userDTO) {
         return UserEntity.builder()
                          .username(userDTO.getUsername())
                          .password(userDTO.getPassword())
+                         .email(userDTO.getEmail())
                          .authorities(
                              userDTO.getAuthorities() != null ?
                                 userDTO.getAuthorities()
@@ -35,10 +36,10 @@ public interface UserMapper {
                                         .map(AuthorityDTO::toEntity)
                                         .collect(Collectors.toSet()) : null
                          )
-                         .nonExpired(userDTO.getNonExpired())
-                         .nonLocked(userDTO.getNonLocked())
-                         .credentialsNonExpired(userDTO.getCredentialsNonExpired())
-                         .enabled(userDTO.getEnabled())
+                         .nonExpired(userDTO.getNonExpired() == null ? true : userDTO.getNonExpired())
+                         .nonLocked(userDTO.getNonLocked() == null ? true : userDTO.getNonLocked())
+                         .credentialsNonExpired(userDTO.getCredentialsNonExpired() == null ? true : userDTO.getCredentialsNonExpired())
+                         .enabled(userDTO.getEnabled() == null ? true : userDTO.getEnabled())
                          .build();
     }
 }

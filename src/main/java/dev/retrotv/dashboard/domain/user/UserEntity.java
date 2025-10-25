@@ -88,31 +88,27 @@ public class UserEntity extends DateEntity implements UserDetails {
      * Credentials Expired: 패스워드 사용 만료 여부 (Ex. 일정기간 이상 패스워드 변경 X, 임시 패스워드 사용중인 계정)
      * Enabled: 계정 활성 여부 (Ex. E-Mail, SMS 등으로 인증한 경우에 Enabled 상태가 됨)
      */
-    @Size(max = 1)
     @Builder.Default
     @Comment("계정 만료 여부")
-    @Column(name = "NON_EXPIRED", nullable = false)
+    @Column(name = "NON_EXPIRED", nullable = false, length = 1)
     @Convert(converter = BooleanYNConverter.class)
     private boolean nonExpired = true;
 
-    @Size(max = 1)
     @Builder.Default
     @Comment("계정 잠금 여부")
-    @Column(name = "NON_LOCKED", nullable = false)
+    @Column(name = "NON_LOCKED", nullable = false, length = 1)
     @Convert(converter = BooleanYNConverter.class)
     private boolean nonLocked = true;
 
-    @Size(max = 1)
     @Builder.Default
     @Comment("자격증명 만료 여부")
-    @Column(name = "CREDENTIALS_NON_EXPIRED", nullable = false)
+    @Column(name = "CREDENTIALS_NON_EXPIRED", nullable = false, length = 1)
     @Convert(converter = BooleanYNConverter.class)
     private boolean credentialsNonExpired = true;
 
-    @Size(max = 1)
     @Builder.Default
     @Comment("계정 활성 여부")
-    @Column(name = "ENABLED", nullable = false)
+    @Column(name = "ENABLED", nullable = false, length = 1)
     @Convert(converter = BooleanYNConverter.class)
     private boolean enabled = false;
 
@@ -182,7 +178,7 @@ public class UserEntity extends DateEntity implements UserDetails {
     /**
      * 계정을 파기 취소 합니다.
      */
-    public void unexpire() {
+    public void unExpire() {
         nonExpired = true;
     }
 
@@ -210,7 +206,7 @@ public class UserEntity extends DateEntity implements UserDetails {
     /**
      * 계정 인증 수단을 만료 취소 합니다.
      */
-    public void credentialsUnexpire() {
+    public void credentialsUnExpire() {
         credentialsNonExpired = true;
     }
 
@@ -264,7 +260,7 @@ public class UserEntity extends DateEntity implements UserDetails {
         return UserMapper.INSTANCE.toDTO(this, this.authorities);
     }
 
-    public UserDTO toExcloudPasswordDTO() {
-        return UserMapper.INSTANCE.toExcloudPasswordDTO(this, this.authorities);
+    public UserDTO toExcludePasswordDTO() {
+        return UserMapper.INSTANCE.toExcludePasswordDTO(this, this.authorities);
     }
 }

@@ -32,7 +32,7 @@ public class UserController {
         );
     }
 
-    @PostMapping("singup")
+    @PostMapping("signup")
     public ResponseEntity<Response> signupAccount(@RequestBody UserDTO userDTO) {
         userService.createUser(userDTO);
         return ResponseEntity.ok(new SuccessResponse("정상적으로 가입되었습니다."));
