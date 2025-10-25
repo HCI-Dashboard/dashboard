@@ -1,12 +1,12 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.7'
-	id 'io.spring.dependency-management' version '1.1.7'
+	id "java"
+	id "org.springframework.boot" version "3.5.7"
+	id "io.spring.dependency-management" version "1.1.7"
 }
 
-group = 'dev.retrotv'
-version = '0.0.1-SNAPSHOT'
-description = 'Demo project for Spring Boot'
+group = "dev.retrotv"
+version = "0.0.1-SNAPSHOT"
+description = "Demo project for Spring Boot"
 
 java {
 	toolchain {
@@ -16,8 +16,8 @@ java {
 
 configurations {
 	all {
-		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+		exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
+		exclude group: "org.springframework.boot", module: "spring-boot-starter-tomcat"
 	}
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -28,21 +28,46 @@ repositories {
 	mavenCentral()
 }
 
+def retrotvFramework = "0.0.35-alpha"
+def mapstruct = "1.6.3"
+def queryDsl = "7.0"
+
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-undertow'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
-	runtimeOnly 'com.h2database:h2'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation "dev.retrotv:framework.foundation.common:${retrotvFramework}"
+	implementation "dev.retrotv:framework.persistence.jpa:${retrotvFramework}"
+
+	/*
+	 * QueryDSL
+	 */
+	implementation "io.github.openfeign.querydsl:querydsl-core:${queryDsl}"
+	implementation "io.github.openfeign.querydsl:querydsl-jpa:${queryDsl}"
+	annotationProcessor "io.github.openfeign.querydsl:querydsl-apt:${queryDsl}:jpa"
+
+	implementation "org.springframework.boot:spring-boot-starter-actuator"
+	implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+	implementation "org.springframework.boot:spring-boot-starter-security"
+	implementation "org.springframework.boot:spring-boot-starter-web"
+	implementation "org.springframework.boot:spring-boot-starter-undertow"
+	implementation "org.springframework.boot:spring-boot-starter-jdbc"
+	implementation "org.springframework.boot:spring-boot-starter-validation"
+	implementation "org.springframework.boot:spring-boot-starter-log4j2"
+	implementation "org.springframework.security:spring-security-crypto"
+	runtimeOnly "com.h2database:h2"
+	compileOnly "org.projectlombok:lombok"
+	developmentOnly "org.springframework.boot:spring-boot-devtools"
+	annotationProcessor "org.projectlombok:lombok"
+	testImplementation "org.springframework.boot:spring-boot-starter-test"
+	testImplementation "org.springframework.security:spring-security-test"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+
+	/*
+	 * MapStruct (lombok에 대한 종속성을 가지므로, 반드시 lombok 다음에 선언해야 함)
+	 */
+	implementation "org.mapstruct:mapstruct:${mapstruct}"
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct}"
+	testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct}"
 }
 
-tasks.named('test') {
+tasks.named("test") {
 	useJUnitPlatform()
 }
