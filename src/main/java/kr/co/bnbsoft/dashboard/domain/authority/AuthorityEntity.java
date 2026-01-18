@@ -81,4 +81,3 @@ public class AuthorityEntity extends DateEntity implements GrantedAuthority, Per
         this.isNew = true;
     }
 }
-
