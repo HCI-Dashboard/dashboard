@@ -1,10 +1,25 @@
-server:
-  port: 8080
 spring:
   application:
     name: dashboard
-  output:
-    ansi:
-      enabled: ALWAYS
-  profiles:
-    active: dev
+  datasource:
+    url: jdbc:sqlite:dashboard.sqlite
+    driver-class-name: org.sqlite.JDBC
+  session:
+    jdbc:
+      initialize-schema: always
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        "[format_sql]": true
+
+session:
+  datasource:
+    url: jdbc:sqlite:session.sqlite
+    driver-class-name: org.sqlite.JDBC

@@ -1,13 +1,13 @@
-package dev.retrotv.dashboard.domain.user;
+package kr.co.bnbsoft.dashboard.domain.user;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,8 +23,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
-import dev.retrotv.dashboard.domain.authority.AuthorityEntity;
+import kr.co.bnbsoft.dashboard.domain.authority.AuthorityEntity;
 import dev.retrotv.framework.persistence.jpa.converter.BooleanYNConverter;
 import dev.retrotv.framework.persistence.jpa.entity.DateEntity;
 import lombok.AllArgsConstructor;
@@ -41,7 +40,6 @@ import lombok.experimental.SuperBuilder;
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
-@Comment("사용자 테이블")
 @Table(
     name = "USERS",
     indexes = {
@@ -53,25 +51,18 @@ import lombok.experimental.SuperBuilder;
 
 // 삭제 쿼리 실행 시, NON_EXPIRED, ENABLED 컬럼을 'N'으로 업데이트
 @SQLDelete(sql = "UPDATE USERS SET NON_EXPIRED = 'N', ENABLED = 'N' WHERE USERNAME = ? AND NON_EXPIRED = 'Y'")
-public class UserEntity extends DateEntity implements UserDetails {
+public class UserEntity extends DateEntity implements UserDetails, Persistable<String> {
 
     @Id
-    @Size(max = 50)
-    @Comment("사용자 명")
-    @Column(name = "USERNAME", nullable = false)
+    @Column(name = "USERNAME")
     private String username;
 
-    @Size(max = 100)
-    @Comment("비밀번호")
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
-    @Size(max = 50)
-    @Comment("이메일")
     @Column(name = "EMAIL", nullable = false)
     private String email;
 
-    @Comment("사용자 권한")
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "USER_AUTHORITY",
@@ -89,25 +80,21 @@ public class UserEntity extends DateEntity implements UserDetails {
      * Enabled: 계정 활성 여부 (Ex. E-Mail, SMS 등으로 인증한 경우에 Enabled 상태가 됨)
      */
     @Builder.Default
-    @Comment("계정 만료 여부")
     @Column(name = "NON_EXPIRED", nullable = false, length = 1)
     @Convert(converter = BooleanYNConverter.class)
     private boolean nonExpired = true;
 
     @Builder.Default
-    @Comment("계정 잠금 여부")
     @Column(name = "NON_LOCKED", nullable = false, length = 1)
     @Convert(converter = BooleanYNConverter.class)
     private boolean nonLocked = true;
 
     @Builder.Default
-    @Comment("자격증명 만료 여부")
     @Column(name = "CREDENTIALS_NON_EXPIRED", nullable = false, length = 1)
     @Convert(converter = BooleanYNConverter.class)
     private boolean credentialsNonExpired = true;
 
     @Builder.Default
-    @Comment("계정 활성 여부")
     @Column(name = "ENABLED", nullable = false, length = 1)
     @Convert(converter = BooleanYNConverter.class)
     private boolean enabled = false;
@@ -178,7 +165,7 @@ public class UserEntity extends DateEntity implements UserDetails {
     /**
      * 계정을 파기 취소 합니다.
      */
-    public void unExpire() {
+    public void unexpire() {
         nonExpired = true;
     }
 
@@ -206,7 +193,7 @@ public class UserEntity extends DateEntity implements UserDetails {
     /**
      * 계정 인증 수단을 만료 취소 합니다.
      */
-    public void credentialsUnExpire() {
+    public void credentialsUnexpire() {
         credentialsNonExpired = true;
     }
 
@@ -235,7 +222,7 @@ public class UserEntity extends DateEntity implements UserDetails {
 
     /**
      * 권한을 업데이트 합니다.
-     * 
+     *
      * @param authorities 새 권한들
      */
     public void updateAuthorities(Collection<? extends GrantedAuthority> authorities) {
@@ -256,11 +243,13 @@ public class UserEntity extends DateEntity implements UserDetails {
         authorities.removeIf(authority -> authority.getAuthority().equals(authorityCode));
     }
 
-    public UserDTO toDTO() {
-        return UserMapper.INSTANCE.toDTO(this, this.authorities);
+    @Override
+    public String getId() {
+        return this.username;
     }
 
-    public UserDTO toExcludePasswordDTO() {
-        return UserMapper.INSTANCE.toExcludePasswordDTO(this, this.authorities);
+    @Override
+    public boolean isNew() {
+        return this.createdDate == null;
     }
 }
