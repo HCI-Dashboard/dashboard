@@ -1,4 +1,4 @@
-package kr.co.bnbsoft.dashboard.config;
+package kr.co.bnbsoft.dashboard.config.datasource;
 
 import javax.sql.DataSource;
 
