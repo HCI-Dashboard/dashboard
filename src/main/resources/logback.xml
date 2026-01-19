@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>[%d{HH:mm:ss.SSS}] [%thread] %highlight([%-5level]) %cyan([%logger{36}]) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+    <!-- Hibernate 쿼리 파라미터 표시 -->
+    <logger name="org.hibernate.orm.jdbc.bind" level="ERROR" />
+    <logger name="dev.retrotv.framework" level="TRACE" />
+    <logger name="kr.co.bnbsoft.dashboard" level="DEBUG" />
+</configuration>

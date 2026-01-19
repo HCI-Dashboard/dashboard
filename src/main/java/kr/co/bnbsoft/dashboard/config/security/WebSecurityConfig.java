@@ -105,62 +105,73 @@ public class WebSecurityConfig {
             .sessionManagement(session ->
                 session
 
-                       // 최대 세션 수
-                       .maximumSessions(1)
+                    // 최대 세션 수
+                    .maximumSessions(1)
 
-                       // 중복 로그인 방지 (true: 예외 발생, false: 기존 세션 만료)
-                       .maxSessionsPreventsLogin(false)
+                    // 중복 로그인 방지 (true: 예외 발생, false: 기존 세션 만료)
+                    .maxSessionsPreventsLogin(false)
+            )
+
+            // 익명 사용자 설정
+            .anonymous(a ->
+                a
+
+                    // 익명 사용자 principal 설정
+                    .principal("Anonymous")
+
+                    // 익명 사용자 권한 설정
+                    .authorities("ROLE_GUEST")
             )
 
             // 로그인 설정
             .formLogin(login ->
                 login
 
-                     // 로그인 진행 URL
-                     .loginProcessingUrl(LOGIN_SUBMIT_URL)
+                    // 로그인 진행 URL
+                    .loginProcessingUrl(LOGIN_SUBMIT_URL)
 
-                     // Username 파라미터 명
-                     .usernameParameter(USERNAME_PARAMETER)
+                    // Username 파라미터 명
+                    .usernameParameter(USERNAME_PARAMETER)
 
-                     // Password 파라미터 명
-                     .passwordParameter(PASSWORD_PARAMETER)
+                    // Password 파라미터 명
+                    .passwordParameter(PASSWORD_PARAMETER)
 
-                     // 로그인 실패 핸들러 설정
-                     .failureHandler(authenticationFailHandler)
+                    // 로그인 실패 핸들러 설정
+                    .failureHandler(authenticationFailHandler)
 
-                     // 로그인 성공 핸들러 설정
-                     .successHandler(authenticationSuccessHandler)
+                    // 로그인 성공 핸들러 설정
+                    .successHandler(authenticationSuccessHandler)
             )
 
             // 로그아웃 설정
             .logout(logout ->
                 logout
 
-                      // 로그아웃 진행 URL
-                      .logoutUrl(LOGOUT_SUBMIT_URL)
+                    // 로그아웃 진행 URL
+                    .logoutUrl(LOGOUT_SUBMIT_URL)
 
-                      // 로그아웃 핸들러 설정
-                      .addLogoutHandler(new SecurityContextLogoutHandler())
+                    // 로그아웃 핸들러 설정
+                    .addLogoutHandler(new SecurityContextLogoutHandler())
 
-                      // 삭제할 세션 쿠키 명
-                      .deleteCookies("SESSIONID")
+                    // 삭제할 세션 쿠키 명
+                    .deleteCookies("SESSIONID")
 
-                      // 세션 무효화
-                      .invalidateHttpSession(true)
+                    // 세션 무효화
+                    .invalidateHttpSession(true)
 
-                      // 인증 정보 삭제
-                      .clearAuthentication(true)
+                    // 인증 정보 삭제
+                    .clearAuthentication(true)
             )
 
             // 접근 예외 처리 설정
             .exceptionHandling(exception ->
                 exception
 
-                         // 접근 거부 핸들러 설정
-                         .accessDeniedHandler(accessDeniedHandler)
+                    // 접근 거부 핸들러 설정
+                    .accessDeniedHandler(accessDeniedHandler)
 
-                         // 인증 진입점 설정
-                         .authenticationEntryPoint(authenticationEntryPoint)
+                    // 인증 진입점 설정
+                    .authenticationEntryPoint(authenticationEntryPoint)
             )
 
             // 사용할 AuthenticationProvider

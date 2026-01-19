@@ -85,25 +85,20 @@ public class DataSourceConfig {
      */
     @Bean
     AuditorAware<String> auditorProvider() {
-        return () -> {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return () -> Optional.of("Anonymous");
+        }
 
-            if (authentication == null || !authentication.isAuthenticated()) {
-                return Optional.of("Anonymous");
-            }
-
-            Object principal = authentication.getPrincipal();
-            String userId;
-
-            userId = switch (principal) {
-                case UserDetails user -> user.getUsername();
-                case String user -> user;
-                default -> "Anonymous";
-            };
-
-            log.debug("로그인 사용자: {}", userId);
-
-            return Optional.of(userId);
+        Object principal = authentication.getPrincipal();
+        String userId = switch (principal) {
+            case UserDetails user -> user.getUsername();
+            case String user -> user;
+            default -> "Anonymous";
         };
+
+        log.debug("로그인 사용자: {}", userId);
+
+        return () -> Optional.of(userId);
     }
 }
