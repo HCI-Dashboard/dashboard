@@ -60,7 +60,7 @@ public class UserEntity extends DateEntity implements UserDetails, Persistable<S
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
-    @Column(name = "EMAIL", nullable = false)
+    @Column(name = "EMAIL")
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)

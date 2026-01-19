@@ -46,13 +46,15 @@ public class WebSecurityConfig {
 
     private static final String USERNAME_PARAMETER = "username";
     private static final String PASSWORD_PARAMETER = "password";
+    private static final String INIT_ADMIN_URL = "/api/v1/users/init-admin";
     private static final String LOGIN_SUBMIT_URL = "/api/v1/login-submit";
     private static final String LOGOUT_SUBMIT_URL = "/api/v1/logout-submit";
     private static final String SIGNUP_URL = "/api/v1/users/signup";
     private static final String STATIC_FILE_URL = "/static/**";
 
     private static final String[] PERMIT_URL_ARRAY = {
-          LOGIN_SUBMIT_URL
+          INIT_ADMIN_URL
+        , LOGIN_SUBMIT_URL
         , LOGOUT_SUBMIT_URL
         , SIGNUP_URL
         , STATIC_FILE_URL
