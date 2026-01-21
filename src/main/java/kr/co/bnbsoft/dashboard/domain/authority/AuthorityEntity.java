@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @Table(
     name = "AUTHORITIES",
     indexes = {
-        @Index(name = "IDX_AUTHORITY_CODE_PK", columnList = "AUTHORITY_CODE", unique = true)
+        @Index(name = "IDX_AUTHORITY_PK", columnList = "AUTHORITY_CODE", unique = true)
     }
 )
 public class AuthorityEntity extends DateEntity implements GrantedAuthority, Persistable<String> {
