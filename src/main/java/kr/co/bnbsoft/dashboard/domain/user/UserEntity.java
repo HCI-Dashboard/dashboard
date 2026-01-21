@@ -250,6 +250,6 @@ public class UserEntity extends DateEntity implements UserDetails, Persistable<S
 
     @Override
     public boolean isNew() {
-        return this.createdDate == null;
+        return this.createdAt == null;
     }
 }

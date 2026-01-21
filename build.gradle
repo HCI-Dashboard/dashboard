@@ -24,7 +24,7 @@ repositories {
 	mavenCentral()
 }
 
-def retrotvFramework = "0.0.39-alpha"
+def retrotvFramework = "0.0.40-alpha"
 
 dependencies {
 	implementation "dev.retrotv:framework.foundation.common:${retrotvFramework}"

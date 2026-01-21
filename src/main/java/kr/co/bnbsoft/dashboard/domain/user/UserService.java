@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.retrotv.framework.foundation.common.AbstractService;
+import dev.retrotv.framework.foundation.common.exception.http.BadRequestException;
 import dev.retrotv.framework.persistence.jpa.embedded.Use;
 import kr.co.bnbsoft.dashboard.domain.authority.AuthorityEntity;
 import kr.co.bnbsoft.dashboard.domain.authority.AuthorityRepository;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -35,6 +37,11 @@ public class UserService extends AbstractService implements UserDetailsService {
 
     @Transactional
     public void initManagerUser(InitUserDTO initUserDTO) {
+        Optional<AuthorityEntity> findAdminRole = authorityRepository.findById("ROLE_ADMIN");
+        findAdminRole.ifPresent(authority -> {
+            throw new BadRequestException("어드민 계정이 이미 존재합니다.");
+        });
+
         AuthorityEntity adminAuthority = authorityRepository.saveAndFlush(
             AuthorityEntity.builder()
                 .authorityCode("ROLE_ADMIN")
