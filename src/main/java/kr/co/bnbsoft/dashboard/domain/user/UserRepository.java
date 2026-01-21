@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 
-
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, String> {
     Optional<UserEntity> findByUsername(String username);

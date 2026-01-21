@@ -29,19 +29,35 @@ public class UserService extends AbstractService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * 사용자 정보 조회
+     * @param username
+     * @return UserDetails
+     * @exception UsernameNotFoundException 사용자가 존재하지 않는 경우 던져짐
+     */
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return findUser(username);
+        log.debug("username: {}", username);
+        return userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_MESSAGE));
     }
 
+    /**
+     * 관리자 계정 초기화
+     * @param initUserDTO
+     * @exception BadRequestException 이미 관리자 계정이 존재하는 경우 던져짐
+     */
     @Transactional
     public void initManagerUser(InitUserDTO initUserDTO) {
+
+        // ROLE_ADMIN 권한이 이미 존재하는지 확인
         Optional<AuthorityEntity> findAdminRole = authorityRepository.findById("ROLE_ADMIN");
         findAdminRole.ifPresent(authority -> {
             throw new BadRequestException("어드민 계정이 이미 존재합니다.");
         });
 
+        // 관리자 권한 생성
         AuthorityEntity adminAuthority = authorityRepository.saveAndFlush(
             AuthorityEntity.builder()
                 .authorityCode("ROLE_ADMIN")
@@ -57,6 +73,7 @@ public class UserService extends AbstractService implements UserDetailsService {
                 .build()
         );
 
+        // 관리자 계정 생성
         userRepository.saveAndFlush(
             UserEntity.builder()
                 .username(initUserDTO.getUsername())
@@ -65,11 +82,5 @@ public class UserService extends AbstractService implements UserDetailsService {
                 .authorities(Set.of(adminAuthority))
                 .build()
         );
-    }
-
-    private UserEntity findUser(String username) {
-        log.debug("username: {}", username);
-        return userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_MESSAGE));
     }
 }

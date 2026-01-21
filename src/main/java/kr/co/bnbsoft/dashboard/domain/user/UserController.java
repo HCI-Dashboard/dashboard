@@ -21,6 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class UserController {
     private final UserService userService;
 
+    /**
+     * 관리자 계정 초기화
+     * @param initUserDTO 초기 관리자 계정 정보
+     * @return ResponseEntity<Response> 정상 응답
+     */
     @PostMapping("/init-admin")
     public ResponseEntity<Response> postMethodName(@RequestBody InitUserDTO initUserDTO) {
         userService.initManagerUser(initUserDTO);
