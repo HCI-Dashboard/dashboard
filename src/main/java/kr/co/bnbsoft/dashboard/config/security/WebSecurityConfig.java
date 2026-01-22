@@ -19,6 +19,7 @@ import org.springframework.security.web.session.DisableEncodeUrlFilter;
 
 import dev.retrotv.framework.foundation.common.filter.RequestLoggingFilter;
 import jakarta.servlet.DispatcherType;
+import kr.co.bnbsoft.dashboard.config.security.filter.AccessLoggingFilter;
 import kr.co.bnbsoft.dashboard.config.security.filter.GetUserInfoFilter;
 import kr.co.bnbsoft.dashboard.config.security.filter.RequestWrappingFilter;
 import kr.co.bnbsoft.dashboard.config.security.handler.AccessDeniedHandlerImpl;
@@ -68,6 +69,17 @@ public class WebSecurityConfig {
     FilterRegistrationBean<RequestWrappingFilter> firstFilterRegistration(RequestWrappingFilter filter) {
         FilterRegistrationBean<RequestWrappingFilter> reg = new FilterRegistrationBean<>(filter);
         reg.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        reg.addUrlPatterns("/*");
+        reg.setDispatcherTypes(DispatcherType.REQUEST);
+
+        return reg;
+    }
+
+    // AccessLoggingFilter를 두 번째로 등록하여 모든 요청 정보를 로깅
+    @Bean
+    FilterRegistrationBean<AccessLoggingFilter> secondFilterRegistrationBean(AccessLoggingFilter filter) {
+        FilterRegistrationBean<AccessLoggingFilter> reg = new FilterRegistrationBean<>(filter);
+        reg.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);
         reg.addUrlPatterns("/*");
         reg.setDispatcherTypes(DispatcherType.REQUEST);
 
