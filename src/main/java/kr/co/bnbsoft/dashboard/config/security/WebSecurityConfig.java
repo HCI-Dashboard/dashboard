@@ -17,8 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.session.DisableEncodeUrlFilter;
 
-import jakarta.servlet.DispatcherType;
 import dev.retrotv.framework.foundation.common.filter.RequestLoggingFilter;
+import jakarta.servlet.DispatcherType;
 import kr.co.bnbsoft.dashboard.config.security.filter.GetUserInfoFilter;
 import kr.co.bnbsoft.dashboard.config.security.filter.RequestWrappingFilter;
 import kr.co.bnbsoft.dashboard.config.security.handler.AccessDeniedHandlerImpl;
@@ -40,8 +40,8 @@ public class WebSecurityConfig {
 
     private final RequestLoggingFilter requestLoggingFilter = new RequestLoggingFilter();
 
-    private final DaoAuthenticationProvider daoAuthenticationProvider;
     private final GetUserInfoFilter getUserInfoFilter;
+    private final DaoAuthenticationProvider daoAuthenticationProvider;
     private final AuthenticationSuccessHandlerImpl authenticationSuccessHandler;
     private final AccessDeniedHandlerImpl accessDeniedHandler;
     private final AuthenticationEntryPointImpl authenticationEntryPoint;
@@ -193,9 +193,8 @@ public class WebSecurityConfig {
             .authenticationProvider(daoAuthenticationProvider)
 
             // 필터 설정
-            .addFilterBefore(requestLoggingFilter, DisableEncodeUrlFilter.class)
             .addFilterBefore(getUserInfoFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(getUserInfoFilter, RequestLoggingFilter.class)
+            .addFilterBefore(requestLoggingFilter, DisableEncodeUrlFilter.class)
             ;
 
         return http.build();

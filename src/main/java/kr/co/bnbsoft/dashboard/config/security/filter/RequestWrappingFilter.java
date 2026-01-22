@@ -21,7 +21,7 @@ public class RequestWrappingFilter extends OncePerRequestFilter {
         @NonNull HttpServletResponse response,
         @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request, 0);
+        ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request, 1024);
         filterChain.doFilter(wrappedRequest, response);
     }
 }

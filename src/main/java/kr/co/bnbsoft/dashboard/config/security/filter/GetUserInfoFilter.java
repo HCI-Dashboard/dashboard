@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,11 +22,13 @@ public class GetUserInfoFilter extends OncePerRequestFilter {
         @NonNull HttpServletResponse response,
         @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+        if ("/api/v1/login-submit".equals(request.getRequestURI())) {
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
 
-        log.debug("username: {}", username);
-        log.debug("password: {}", password);
+            log.debug("username: {}", username);
+            log.debug("password: {}", password);
+        }
 
         filterChain.doFilter(request, response);
     }
