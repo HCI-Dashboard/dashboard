@@ -1,5 +1,7 @@
 package kr.co.bnbsoft.dashboard.domain.cluster;
 
+import java.time.format.DateTimeFormatter;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -38,4 +40,20 @@ public class ClusterInfoEntity extends DateEntity {
 
     @Column(name = "WEBHOOK_URL", nullable = true)
     private String webhookUrl;
+
+    public ClusterInfoDTO toDTO() {
+        DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        String createdAt = this.getCreatedAt() != null ? this.getCreatedAt().format(fmt) : null;
+        String modifiedAt = this.getModifiedAt() != null ? this.getModifiedAt().format(fmt) : null;
+
+        return ClusterInfoDTO.builder()
+            .clusterIp(this.clusterIp)
+            .label(this.label)
+            .webhookUrl(this.webhookUrl)
+            .createdAt(createdAt)
+            .createdId(this.getCreatedId())
+            .modifiedAt(modifiedAt)
+            .modifiedId(this.getModifiedId())
+            .build();
+    }
 }

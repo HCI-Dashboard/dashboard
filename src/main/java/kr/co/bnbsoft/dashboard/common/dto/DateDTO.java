@@ -16,8 +16,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class DateDTO implements Serializable {
-    protected String createdDate;
+    protected String createdAt;
     protected String createdId;
-    protected String modifiedDate;
+    protected String modifiedAt;
     protected String modifiedId;
 }

@@ -151,7 +151,7 @@ public class WebSecurityConfig {
                     .addLogoutHandler(new SecurityContextLogoutHandler())
 
                     // 삭제할 세션 쿠키 명
-                    .deleteCookies("SESSIONID")
+                    .deleteCookies("SESSION")
 
                     // 세션 무효화
                     .invalidateHttpSession(true)
@@ -176,7 +176,7 @@ public class WebSecurityConfig {
 
             /*
              * username 및 password 파라미터가 잘못 된 경우, UsernamePasswordAuthenticationFilter 이후 전파가 안되므로
-             * GetUserInfoFilter가 UsernamePasswordAuthenticationFilter 이전에 실행되도록 설정 함
+             * 로깅을 위해 GetUserInfoFilter가 UsernamePasswordAuthenticationFilter 이전에 실행되도록 설정 함
              */
             .addFilterBefore(getUserInfoFilter, UsernamePasswordAuthenticationFilter.class)
             ;
