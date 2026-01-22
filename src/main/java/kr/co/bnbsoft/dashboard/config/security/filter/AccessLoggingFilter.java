@@ -50,8 +50,6 @@ public class AccessLoggingFilter extends OncePerRequestFilter {
         // 올바른 응답 값을 가져오기 위해서는 반드시 doFilter 이후에 response에 접근해야 함
         int httpStatus = response.getStatus();
 
-        accessLogService.accessLogging(username, uri, clientIp, httpStatus);
-
-        log.debug("HTTP STATUS: {}", response.getStatus());
+        accessLogService.accessLogging(username, clientIp, uri, httpStatus);
     }
 }

@@ -1,10 +1,8 @@
 package kr.co.bnbsoft.dashboard.config.security;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,13 +13,9 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.security.web.session.DisableEncodeUrlFilter;
 
-import dev.retrotv.framework.foundation.common.filter.RequestLoggingFilter;
 import jakarta.servlet.DispatcherType;
-import kr.co.bnbsoft.dashboard.config.security.filter.AccessLoggingFilter;
 import kr.co.bnbsoft.dashboard.config.security.filter.GetUserInfoFilter;
-import kr.co.bnbsoft.dashboard.config.security.filter.WrappingFilter;
 import kr.co.bnbsoft.dashboard.config.security.handler.AccessDeniedHandlerImpl;
 import kr.co.bnbsoft.dashboard.config.security.handler.AuthenticationEntryPointImpl;
 import kr.co.bnbsoft.dashboard.config.security.handler.AuthenticationFailureHandlerImpl;
@@ -38,8 +32,6 @@ public class WebSecurityConfig {
 
     @Value("${spring.security.disable:false}")
     private boolean securityDisable;
-
-    private final RequestLoggingFilter requestLoggingFilter = new RequestLoggingFilter();
 
     private final GetUserInfoFilter getUserInfoFilter;
     private final DaoAuthenticationProvider daoAuthenticationProvider;
@@ -63,28 +55,6 @@ public class WebSecurityConfig {
         , SIGNUP_URL
         , STATIC_FILE_URL
     };
-
-    // RequestWrappingFilter를 가장 먼저 등록하여 모든 요청을 래핑
-    @Bean
-    FilterRegistrationBean<WrappingFilter> firstFilterRegistration(WrappingFilter filter) {
-        FilterRegistrationBean<WrappingFilter> reg = new FilterRegistrationBean<>(filter);
-        reg.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        reg.addUrlPatterns("/*");
-        reg.setDispatcherTypes(DispatcherType.REQUEST);
-
-        return reg;
-    }
-
-    // AccessLoggingFilter를 두 번째로 등록하여 모든 요청 정보를 로깅
-    @Bean
-    FilterRegistrationBean<AccessLoggingFilter> secondFilterRegistrationBean(AccessLoggingFilter filter) {
-        FilterRegistrationBean<AccessLoggingFilter> reg = new FilterRegistrationBean<>(filter);
-        reg.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);
-        reg.addUrlPatterns("/*");
-        reg.setDispatcherTypes(DispatcherType.REQUEST);
-
-        return reg;
-    }
 
     // SecurityFilterChain 빈 등록
     @Bean
@@ -204,9 +174,11 @@ public class WebSecurityConfig {
             // 사용할 AuthenticationProvider
             .authenticationProvider(daoAuthenticationProvider)
 
-            // 필터 설정
+            /*
+             * username 및 password 파라미터가 잘못 된 경우, UsernamePasswordAuthenticationFilter 이후 전파가 안되므로
+             * GetUserInfoFilter가 UsernamePasswordAuthenticationFilter 이전에 실행되도록 설정 함
+             */
             .addFilterBefore(getUserInfoFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(requestLoggingFilter, DisableEncodeUrlFilter.class)
             ;
 
         return http.build();
