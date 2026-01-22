@@ -21,7 +21,7 @@ import dev.retrotv.framework.foundation.common.filter.RequestLoggingFilter;
 import jakarta.servlet.DispatcherType;
 import kr.co.bnbsoft.dashboard.config.security.filter.AccessLoggingFilter;
 import kr.co.bnbsoft.dashboard.config.security.filter.GetUserInfoFilter;
-import kr.co.bnbsoft.dashboard.config.security.filter.RequestWrappingFilter;
+import kr.co.bnbsoft.dashboard.config.security.filter.WrappingFilter;
 import kr.co.bnbsoft.dashboard.config.security.handler.AccessDeniedHandlerImpl;
 import kr.co.bnbsoft.dashboard.config.security.handler.AuthenticationEntryPointImpl;
 import kr.co.bnbsoft.dashboard.config.security.handler.AuthenticationFailureHandlerImpl;
@@ -66,8 +66,8 @@ public class WebSecurityConfig {
 
     // RequestWrappingFilter를 가장 먼저 등록하여 모든 요청을 래핑
     @Bean
-    FilterRegistrationBean<RequestWrappingFilter> firstFilterRegistration(RequestWrappingFilter filter) {
-        FilterRegistrationBean<RequestWrappingFilter> reg = new FilterRegistrationBean<>(filter);
+    FilterRegistrationBean<WrappingFilter> firstFilterRegistration(WrappingFilter filter) {
+        FilterRegistrationBean<WrappingFilter> reg = new FilterRegistrationBean<>(filter);
         reg.setOrder(Ordered.HIGHEST_PRECEDENCE);
         reg.addUrlPatterns("/*");
         reg.setDispatcherTypes(DispatcherType.REQUEST);

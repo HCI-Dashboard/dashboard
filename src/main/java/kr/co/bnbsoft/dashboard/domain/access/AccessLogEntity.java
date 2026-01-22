@@ -38,6 +38,9 @@ public class AccessLogEntity {
     @Column(name = "URI", nullable = false)
     private String uri;
 
+    @Column(name = "HTTP_STATUS", nullable = false)
+    private int httpStatus;
+
     @CreatedDate
     @Column(name = "ACCESS_AT", nullable = false, updatable = false)
     private String accessAt;

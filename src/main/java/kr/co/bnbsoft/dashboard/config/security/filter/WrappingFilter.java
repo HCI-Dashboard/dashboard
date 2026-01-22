@@ -6,6 +6,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,7 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class RequestWrappingFilter extends OncePerRequestFilter {
+public class WrappingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
@@ -22,6 +23,12 @@ public class RequestWrappingFilter extends OncePerRequestFilter {
         @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request, 1024);
-        filterChain.doFilter(wrappedRequest, response);
+        ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
+
+        try {
+            filterChain.doFilter(wrappedRequest, response);
+        } finally {
+            wrappedResponse.copyBodyToResponse();
+        }
     }
 }

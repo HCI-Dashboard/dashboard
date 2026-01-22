@@ -11,13 +11,14 @@ public class AccessLogService {
     private final AccessLogRepository accessLogRepository;
 
     @Transactional
-    public void accessLogging(String username, String ip, String uri) {
+    public void accessLogging(String username, String ip, String uri, int httpStatus) {
         accessLogRepository.save(
             new AccessLogEntity(
                 null,
                 username,
                 ip,
                 uri,
+                httpStatus,
                 null
             )
         );
