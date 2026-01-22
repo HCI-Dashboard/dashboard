@@ -1,8 +1,10 @@
 package kr.co.bnbsoft.dashboard.config.security;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +20,7 @@ import org.springframework.security.web.session.DisableEncodeUrlFilter;
 import jakarta.servlet.DispatcherType;
 import dev.retrotv.framework.foundation.common.filter.RequestLoggingFilter;
 import kr.co.bnbsoft.dashboard.config.security.filter.GetUserInfoFilter;
+import kr.co.bnbsoft.dashboard.config.security.filter.RequestWrappingFilter;
 import kr.co.bnbsoft.dashboard.config.security.handler.AccessDeniedHandlerImpl;
 import kr.co.bnbsoft.dashboard.config.security.handler.AuthenticationEntryPointImpl;
 import kr.co.bnbsoft.dashboard.config.security.handler.AuthenticationFailureHandlerImpl;
@@ -60,6 +63,18 @@ public class WebSecurityConfig {
         , STATIC_FILE_URL
     };
 
+    // RequestWrappingFilter를 가장 먼저 등록하여 모든 요청을 래핑
+    @Bean
+    FilterRegistrationBean<RequestWrappingFilter> firstFilterRegistration(RequestWrappingFilter filter) {
+        FilterRegistrationBean<RequestWrappingFilter> reg = new FilterRegistrationBean<>(filter);
+        reg.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        reg.addUrlPatterns("/*");
+        reg.setDispatcherTypes(DispatcherType.REQUEST);
+
+        return reg;
+    }
+
+    // SecurityFilterChain 빈 등록
     @Bean
     @SuppressWarnings("java:S6437") // java:S6437: PASSWORD_PARAMETER 경고 제거
     SecurityFilterChain filterChain(HttpSecurity http) {
@@ -180,6 +195,7 @@ public class WebSecurityConfig {
             // 필터 설정
             .addFilterBefore(requestLoggingFilter, DisableEncodeUrlFilter.class)
             .addFilterBefore(getUserInfoFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(getUserInfoFilter, RequestLoggingFilter.class)
             ;
 
         return http.build();
